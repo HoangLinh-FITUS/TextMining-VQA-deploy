@@ -500,8 +500,8 @@ def train_one_epoch(
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     metric_logger.add_meter('min_lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
     header = 'Epoch: [{}]'.format(epoch)
-    print_freq = 50
-    eval_step = 2000
+    print_freq = 375
+    eval_step = 750
 
     if loss_scaler is None:
         model.zero_grad()

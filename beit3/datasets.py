@@ -353,9 +353,9 @@ class VQADataset(BaseDataset):
     def __init__(self, data_path, split, transform, root_folder, tokenizer, num_max_bpe_tokens):
         num_sample = -1
         if split == 'train':
-            num_sample = 20000
+            num_sample = 30000
         elif split == 'val':
-            num_sample = 5000
+            num_sample = 3000
         else:
             num_sample = -1
         self.dataframe = pd.read_csv(os.path.join(data_path, f"{split}.csv"))
