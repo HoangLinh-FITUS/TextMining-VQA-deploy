@@ -625,7 +625,7 @@ def train_one_epoch(
                         utils.save_model(
                             args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
                             loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
-
+                        torch.save(model.state_dict(), f"best.pth")
                 print(f'Best loss: {best_loss:.2f}')
             step += 1
             pbar.update(1)

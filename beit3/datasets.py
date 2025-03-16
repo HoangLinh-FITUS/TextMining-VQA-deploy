@@ -353,13 +353,15 @@ class VQADataset(BaseDataset):
     def __init__(self, data_path, split, transform, root_folder, tokenizer, num_max_bpe_tokens):
         num_sample = -1
         if split == 'train':
-            num_sample = -1
+            num_sample = 20000
         elif split == 'val':
-            num_sample = 2000
+            num_sample = 5000
         else:
-            num_sample = 1000
-        self.dataframe = pd.read_csv(os.path.join(data_path, f"{split}.csv"))[:num_sample]
+            num_sample = -1
+        self.dataframe = pd.read_csv(os.path.join(data_path, f"{split}.csv"))
         self.dataframe.dropna(inplace=True)
+        self.dataframe = self.dataframe.sample(frac=1)
+        self.dataframe = self.dataframe[:num_sample]
         if split == 'train':
             df = pd.read_csv(os.path.join(data_path, f"data.csv"))
             unique_answers = set(df["answer"].tolist())
