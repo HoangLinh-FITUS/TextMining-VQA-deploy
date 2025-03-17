@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     # Load checkpoint
     checkpoint = torch.load(args.model_path, map_location=device)
-
+    print(checkpoint.keys())
     if "model" in checkpoint.keys():
         model.load_state_dict(checkpoint["model"])
         checkpoint = checkpoint["model"]
