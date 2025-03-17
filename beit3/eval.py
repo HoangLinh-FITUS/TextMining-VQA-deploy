@@ -7,6 +7,7 @@ import json
 import numpy as np
 from tqdm import tqdm
 import torch
+from collections import OrderedDict
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('BEiT load model from checkpoint and save', add_help=False)
@@ -52,7 +53,6 @@ if __name__ == '__main__':
 
     # Load checkpoint
     checkpoint = torch.load(args.model_path, map_location=device)
-    print(checkpoint.keys())
     if "model" in checkpoint.keys():
         model.load_state_dict(checkpoint["model"])
         checkpoint = checkpoint["model"]
@@ -60,7 +60,13 @@ if __name__ == '__main__':
         model.load_state_dict(checkpoint["module"])
         checkpoint = checkpoint["module"]
     else:
-        model.load_state_dict(checkpoint)
+        new_state_dict = OrderedDict()
+
+        for key, value in checkpoint.items():
+            new_key = key.replace("module.", "")  # Remove "module."
+            new_state_dict[new_key] = value
+
+        model.load_state_dict(new_state_dict)
 
     # Ensure correct loading
     model = model.half().to(device)  # Convert to FP16 for AMP
