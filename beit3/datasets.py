@@ -376,6 +376,10 @@ class VQADataset(BaseDataset):
                 self.answer2id = json.load(f)
             with open("label2lanswer.json", mode="r", encoding="utf-8") as f:
                 self.id2answer = json.load(f)
+            unique_answers = set(self.dataframef["answer"].tolist())
+            for ans in unique_answers:
+                if ans not in self.answer2id.keys():
+                    self.dataframe = self.dataframe[self.dataframe["answer"] != ans]
         self.root_folder = root_folder
         self.tokenizer = tokenizer
         self.num_max_bpe_tokens = num_max_bpe_tokens
@@ -431,6 +435,7 @@ class VQADataset(BaseDataset):
         item = self.dataframe.iloc[index]
         answer = item["answer"]
         labels = [0.] * len(self.answer2id)
+        
         labels[self.answer2id[answer]] = 1
         data["labels"] = torch.FloatTensor(labels)
         return data
