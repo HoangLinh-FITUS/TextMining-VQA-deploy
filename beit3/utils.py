@@ -24,7 +24,7 @@ import torch.nn.functional as F
 from torch import inf
 from torchmetrics import Metric
 from tensorboardX import SummaryWriter
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, classification_report, confusion_matrix
 import numpy as np
 from tqdm import tqdm
 
@@ -34,7 +34,20 @@ def compute_metrics(logits, labels):
     labels = np.argmax(labels, axis=-1)
     accuracy = accuracy_score(labels, predictions)
     precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average="weighted", zero_division=0)
+    # Compute confusion matrix
+    cm = confusion_matrix(labels, predictions)
 
+    # Get top 5 max values with their indices
+    flat_indices = np.argsort(cm.ravel())[::-1][:5]  # Get indices of top 5 values
+    top_5_values = cm.ravel()[flat_indices]  # Extract top 5 values
+    top_5_indices = [np.unravel_index(idx, cm.shape) for idx in flat_indices]  # Convert to 2D indices
+
+    # Print results
+    print("Confusion Matrix:\n", cm)
+    print("\nTop 5 Maximum Values and Their Positions:")
+    for value, (row, col) in zip(top_5_values, top_5_indices):
+        print(f"Value: {value}, Position: ({row}, {col})")
+    print(classification_report(labels, predictions))
     return {
         "accuracy": accuracy,
         "precision": precision,
