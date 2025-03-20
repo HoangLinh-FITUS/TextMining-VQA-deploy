@@ -100,7 +100,7 @@ def run():
         edited_df.to_csv(PATH_SRC + "/updated_data.csv", mode='a', header=False, index=False)
         st.success("Dữ liệu đã được lưu!")
 
-
-    json_data
+    with st.container(height=300):
+        st.write(json_data)
 
 run()
