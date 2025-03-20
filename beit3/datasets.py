@@ -376,7 +376,7 @@ class VQADataset(BaseDataset):
                 self.answer2id = json.load(f)
             with open("label2lanswer.json", mode="r", encoding="utf-8") as f:
                 self.id2answer = json.load(f)
-            unique_answers = set(self.dataframef["answer"].tolist())
+            unique_answers = set(self.dataframe["answer"].tolist())
             for ans in unique_answers:
                 if ans not in self.answer2id.keys():
                     self.dataframe = self.dataframe[self.dataframe["answer"] != ans]
