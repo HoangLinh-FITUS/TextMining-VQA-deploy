@@ -7,6 +7,7 @@ from timm.models import create_model
 import modeling_finetune
 from collections import OrderedDict
 import torch
+import json
 
 models = {
     "BLIP": (AutoProcessor, BlipForQuestionAnswering, "Salesforce/blip-vqa-base"),
@@ -16,7 +17,10 @@ models = {
 
 def get_format_response(image,question,selected_model):
     if selected_model == 'beit3':
-        processor = Beit3Processing()
+        with open("answer2label.json", mode="r", encoding="utf-8") as f:
+            label2answer = json.load(f)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        processor = Beit3Processing(sentencepiece_model="beit3.spm")
         model = create_model(
             "beit3_base_patch16_480_vqav2_vqav2",
             pretrained=False,
@@ -27,7 +31,7 @@ def get_format_response(image,question,selected_model):
         )
 
         # Load checkpoint
-        checkpoint = torch.load("/home/phongcoder/Workspace/TextMining-VQA/beit3/output/checkpoint-best/mp_rank_00_model_states.pt", map_location=device)
+        checkpoint = torch.load("best.pth", map_location=device)
         if "model" in checkpoint.keys():
             model.load_state_dict(checkpoint["model"])
             checkpoint = checkpoint["model"]
@@ -49,7 +53,7 @@ def get_format_response(image,question,selected_model):
             padding_mask=data["padding_mask"]
         )
         idx = logits.argmax(-1).item()
-        answer = model.config.id2label[idx]
+        answer = label2answer[idx]
         return answer
 
     processor, model_class, model_name = models[selected_model]
