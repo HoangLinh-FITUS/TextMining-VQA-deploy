@@ -11,8 +11,9 @@ Pillow
 tensorboardX
 tqdm
 python-dotenv
-numpy==1.26.4
-streamlit==1.42.2
-torch==2.1.0 
-torchvision==0.16.0 
-transformers==4.35.2
+numpy
+streamlit
+torchvision
+transformers
+timm
+sentencepiece
